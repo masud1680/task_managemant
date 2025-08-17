@@ -1,0 +1,49 @@
+2. Show all employees working on a specific project
+
+
+employees = Employee.objects.filter(task__project__name= "Matrix open-source e-business").distinct()
+
+
+for employee in employees_on_project:
+    print(employee.name, employee.email)
+
+
+
+5. Get the number of tasks completed by a specific employee
+employee = Employee.objects.get(name="Joshua Stephens")
+complete_task = Task.objects.filter(assigned_to = employee , status = 'COMPLETED').count()
+
+6. Get the most recently assigned task
+
+tasks = Task.objects.order_by('-created_at').first()
+
+7. Show all projects that have no tasks assigned
+
+tasks = Project.objects.filter(task__isnull=True)
+
+8. Show tasks that have been overdue for more than a week
+
+from datetime import timedelta
+from django.utils import timezone
+
+
+duedate = timezone.now().date() - timedelta(days=7)
+tasks = Task.objects.filter(due_date__lt = duedate, is_completed = False)
+
+9. Get the total count of tasks assigned to each employee
+
+
+from django.db.models import Count
+
+
+cnt = Employee.objects.annotate(task_count=Count('task'))
+
+
+for emp in cnt:
+    print(f"{emp.name} --- {emp.task_count} tasks")
+
+10. Get tasks that are either 'completed' or 'in-progress'
+
+from django.db.models import Q
+
+tasks = Task.objects.filter(Q(status='COMPLETED') | Q(status='IN_PROGRESS'))

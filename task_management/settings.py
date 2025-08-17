@@ -40,7 +40,17 @@ INSTALLED_APPS = [
     'tasks',
     'users',
     'debug_toolbar',
+    'tailwind',
+    'theme',
 ]
+
+#add
+if DEBUG:
+    # Add django_browser_reload only in DEBUG mode
+    INSTALLED_APPS += ['django_browser_reload']
+    
+TAILWIND_APP_NAME = 'theme'
+NPM_BIN_PATH = r'C:\Program Files\nodejs\npm.cmd'
 
 MIDDLEWARE = [
      "debug_toolbar.middleware.DebugToolbarMiddleware",

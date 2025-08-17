@@ -25,18 +25,49 @@
     <h1>resutl</h1>
 
 
-<div>
+{% comment %} <div>
 
     {% for task in tasks %}
     
     <ul>
-        <li>{{task.status}}</li>
+        <li>
+            <P>{{task.title}}</P>
+            <P>{{task.status}}</P>
+        </li>
+    </ul>
+    {% endfor %}
+
+</div> {% endcomment %}
+
+{% comment %} 
+<div>
+
+    <h1>Title</h1>
+
+    {% for task in tasks_2 %}
+    
+    <ul>
+        <li>{{task.title}}</li>
+    </ul>
+    {% endfor %}
+
+</div> {% endcomment %}
+
+{% comment %} task priority {% endcomment %}
+
+<div>
+
+    <ul>
+    {% for task in tasks %}
+    
+        <li>
+            <P>{{task.task}}</P>
+            <P>{{task.priority}}</P>
+        </li>
     </ul>
     {% endfor %}
 
 </div>
-
-
 
 </body>
 </html>

@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 # Create your models here.
 
@@ -62,7 +63,7 @@ class TaskDetail(models.Model):
     notes = models.TextField(blank=True, null=True)
     
     def __str__(self):
-        return f'Fetails form Task {self.Task.title}'
+        return f"Fetails form Task {self.task.title}"
 
 class Project(models.Model):
 
