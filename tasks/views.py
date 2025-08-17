@@ -60,4 +60,5 @@ def create_task(request):
 def view_task(request):
     tasks = Task.objects.all()
     tasks = Task.objects.filter(id=1)
+    tasks = Task.objects.filter(id=5)
     return render(request, 'dashboard/view_task.html', {'tasks' : tasks})
