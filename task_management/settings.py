@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'users',
     'debug_toolbar',
     'tailwind',
-    'theme',
+    
 ]
 
 #add
