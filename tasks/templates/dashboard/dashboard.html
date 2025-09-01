@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}{% endblock title %}</title>
     
-    <link rel="stylesheet" href="{% static "css/output.css" %}">
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -22,7 +22,10 @@
         font-family: "Inter", sans-serif;
       }
     </style>
+
+        <link rel="stylesheet" href="{% static 'css/output.css' %}">
   </head>
+
   <body class="bg-gray-50 p-6">
     <div class="max-w-[1400px] mx-auto">
       <!-- Header  -->
@@ -55,13 +58,14 @@
 
       <main>
         <!-- Stats Grid  -->
-        <div class="grid  sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="grid  sm:grid-cols-1 md:grid-cols-2  lg:grid-cols-4 gap-4 mb-8">
           <!-- Total Task  -->
+           <a href="{% url 'manager-dashboard'%}?type=all ">
           <div class="bg-white rounded-xl p-6 shadow-sm">
-            <h3 class="text-sm font-medium text-gray-500 mb-4">TOTAL TASK</h3>
+            <h3 class="text-sm font-medium text-gray-500 mb-4 ">TOTAL TASK</h3>
             <div class="flex justify-between items-start">
               <div>
-                <p class="text-3xl font-semibold mb-1">3</p>
+                <p class="text-3xl font-semibold mb-1"> {{counts.total}} </p>
                 <p class="text-gray-500 text-sm">11 last month</p>
               </div>
               <div class="bg-blue-100 p-3 rounded-full">
@@ -82,14 +86,16 @@
               </div>
             </div>
           </div>
+          </a>
           <!-- Completed Task  -->
+           <a href="{% url 'manager-dashboard'%}?type=completed">
           <div class="bg-white rounded-xl p-6 shadow-sm">
             <h3 class="text-sm font-medium text-gray-500 mb-4">
               COMPLETED TASK
             </h3>
             <div class="flex justify-between items-start">
               <div>
-                <p class="text-3xl font-semibold mb-1">1</p>
+                <p class="text-3xl font-semibold mb-1"> {{counts.completed}} </p>
                 <p class="text-gray-500 text-sm">11 last month</p>
               </div>
               <div class="bg-green-100 p-3 rounded-full">
@@ -110,14 +116,16 @@
               </div>
             </div>
           </div>
+          </a>
           <!-- Task In Progress  -->
+           <a href="{% url 'manager-dashboard' %}?type=in_progress">
           <div class="bg-white rounded-xl p-6 shadow-sm">
             <h3 class="text-sm font-medium text-gray-500 mb-4">
               TASK IN PROGRESS
             </h3>
             <div class="flex justify-between items-start">
               <div>
-                <p class="text-3xl font-semibold mb-1">1</p>
+                <p class="text-3xl font-semibold mb-1"> {{ counts.in_progress}} </p>
                 <p class="text-gray-500 text-sm">11 last month</p>
               </div>
               <div class="bg-yellow-100 p-3 rounded-full">
@@ -138,11 +146,14 @@
               </div>
             </div>
           </div>
+          </a>
+          <!--pending task-->
+          <a href="{% url 'manager-dashboard' %}?type=pending">
           <div class="bg-white rounded-xl p-6 shadow-sm">
             <h3 class="text-sm font-medium text-gray-500 mb-4">TODOS</h3>
             <div class="flex justify-between items-start">
               <div>
-                <p class="text-3xl font-semibold mb-1">1</p>
+                <p class="text-3xl font-semibold mb-1"> {{ counts.pending}} </p>
                 <p class="text-gray-500 text-sm">11 last month</p>
               </div>
               <div class="bg-purple-100 p-3 rounded-full">
@@ -163,8 +174,8 @@
               </div>
             </div>
           </div>
+        </a>
         </div>
-
         {% block task %}
         
         {% endblock task %}
@@ -172,6 +183,6 @@
 
       </main>
     </div>
-    {% include "footer.html" %}
+    {% comment %} {% include "footer.html" %} {% endcomment %}
   </body>
 </html>

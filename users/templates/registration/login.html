@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+</head>
+<body class="flex items-center flex-col h-screen">
+    <h1>Welcome to Login system</h1>
+
+<div class="flex justify-center mt-5 ">
+
+    <!--Show message-->
+    {% if messages %}
+    
+    {% for message in messages %}
+        <span class="bg bg-sky-300 text-white text 2xl w-100 h-20">{{message}}</span>
+    {% endfor %}
+    
+    {% endif %}
+    <!--Show non field error-->
+
+    {% if form.non_field_errors %}
+    <ul>
+    {% for error in form.non_field_errors %}
+    <li>{{error}}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+    
+        <form  method='POST'>
+{% csrf_token %}
+
+            <input class="bg-gray-50 py-2 mb-5 border-red-100" type="text" name="username" placeholder="Enter your username"> 
+            <br>
+            <input class=" bg-gray-50 py-2 mt-5"  type="password" name="password" placeholder="Enter your password">
+
+            <br>
+            <button type="Submit " class= "mt-5 px-5 py-3 bg-sky-300 rounded-md text-white text-xl ">Sign In</button>
+                    <a href="{% url 'sign-up' %}"  
+           <span class= "px-5 py-3 bg-yellow-300 rounded-md text-white text-xl ">Register</span> 
+        </a>
+        </form>
+    </div>
+
+</body>
+</html>

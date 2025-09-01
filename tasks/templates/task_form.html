@@ -5,9 +5,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GET-POST</title>
-    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    
+    <link rel="stylesheet" href="{% static "css/output.css" %}">
   </head>
   <body>
+
     <div class="w-1/2 mx-auto ">
       
       {% comment %}
@@ -30,17 +32,23 @@
       {% endcomment %}
 
       <div>
-        {% if message %}
-        <p>{{message}}</p>
+        {% if messages %}
+          {% for message in messages %}
+          
+          <div class="px-2 py-1 {% if message.tags == 'success' %} bg-green-400 {% endif %} ">{{message}}</div>
+
+          {% endfor %}
         {% endif %}
       </div>
 
       <form method="POST">
         <input type="text" > 
         
-        {% csrf_token %} {{form.as_p}}
+        {% csrf_token %} 
+        {{task_form.as_p}}
+        {{task_detail_form.as_p}}
 
-        <button type="submit">Sumbit</button>
+        <button class="bg-sky-300 p-5 " type="submit">Sumbit</button>
       </form>
     </div>
   </body>

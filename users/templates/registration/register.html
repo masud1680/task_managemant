@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Form</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+</head>
+<body class="flex items-center flex-col h-screen">
+    <h1>Welcome to authenction system .</h1>
+    <br>
+<!-- direct form empliment-->
+
+    {% comment %} <div>
+        <form action="" method='POST'>
+            {% csrf_token %}
+            {{form.as_p}}
+
+            <button type="submit" class="bg-sky-400 px-5 py-2 rounded-md">Register</button>
+
+        </form>
+    </div> {% endcomment %}
+
+
+<!--form fields empliment-->
+
+<div class="flex justify-center max-w-max">
+
+    <!--Show message-->
+    {% if messages %}
+    
+    {% for message in messages %}
+        <span class="bg bg-sky-300 text-white text 2xl w-100 h-20">{{message}}</span>
+    {% endfor %}
+    
+    {% endif %}
+    <!--Show non field error-->
+
+    {% if form.non_field_errors %}
+    <ul>
+    {% for error in form.non_field_errors %}
+    <li>{{error}}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+
+    <!-- show form-->
+    <form action="" method='POST'>
+
+        {% csrf_token %}
+
+        {% for field in form %}
+        
+        <p>
+            <label for="{{field.id_for_label}}">{{field.label}}</label>
+
+        {{field}}
+
+        {% if field.errors %}
+        
+        <ul>
+        {% for error in field.errors %}
+            <li>{{error}}</li>
+        {% endfor %}
+        </ul>
+
+        {% endif %}
+        </p>
+
+        {% endfor %}
+
+
+        <button type="Submit " class= "px-5 py-3 bg-sky-300 rounded-md text-white text-xl ">Register</button>
+        <a href="{% url 'sign-in' %}"  
+           <span class= "px-5 py-3 bg-yellow-300 rounded-md text-white text-xl ">Sign In</span> 
+        </a>
+    </form>
+</div>
+</body>
+</html>
+

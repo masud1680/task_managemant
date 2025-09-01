@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+</head>
+<body>
+    
+    <h1>Welcome to HOME</h1>
+
+    {% if user.is_authenticated %}
+    {{user}}
+
+    <form action="{% url 'sign-out' %}" method='POST'>
+        {% csrf_token %}
+
+        <button type="Submit " class= "mt-5 px-5 py-3 bg-red-400 rounded-md text-white text-xl ">Logout</button>
+    </form>
+    {% else %}
+    <h1>Annonymous</h1>
+    <br>
+            <a href="{% url 'sign-in' %}"  
+           <span class= "px-5 py-3 bg-yellow-300 rounded-md text-white text-xl ">Sign In</span> 
+        </a>
+    {% endif %}
+</body>
+</html>
