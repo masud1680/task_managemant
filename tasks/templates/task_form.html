@@ -1,16 +1,9 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GET-POST</title>
-    
-    <link rel="stylesheet" href="{% static "css/output.css" %}">
-  </head>
-  <body>
+{% extends "base.html" %}
 
-    <div class="w-1/2 mx-auto ">
+{% block title %}Create Task{% endblock title %}
+
+{% block content %}
+    <div class="w-1/2 mx-auto my-10">
       
       {% comment %}
       <form method="GET">
@@ -42,14 +35,13 @@
       </div>
 
       <form method="POST">
-        <input type="text" > 
+        
         
         {% csrf_token %} 
         {{task_form.as_p}}
         {{task_detail_form.as_p}}
 
-        <button class="bg-sky-300 p-5 " type="submit">Sumbit</button>
+        <button class="bg-sky-300 px-5 py-2 text-xl text-white rounded-md" type="submit">Sumbit</button>
       </form>
     </div>
-  </body>
-</html>
+{% endblock content %}

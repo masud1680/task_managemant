@@ -1,15 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User 
 from django.conf import settings
 
 # Create your models here.
 
-class Employee(models.Model):
-    name = models.CharField(max_length= 100)
-    email = models.EmailField(unique=True)
-    #tasks
-
-    def __str__(self):
-        return self.name
 
 class Task(models.Model):
     
@@ -23,7 +17,8 @@ class Task(models.Model):
          on_delete = models.CASCADE,
          default = 1
          )
-    assigned_to = models.ManyToManyField(Employee, related_name="task")
+    # assigned_to = models.ManyToManyField(Employee, related_name="task")
+    assigned_to = models.ManyToManyField(User, related_name="task")
      
     title = models.CharField(max_length=251)
     description = models.TextField()

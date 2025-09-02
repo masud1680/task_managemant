@@ -1,79 +1,72 @@
-{% extends "dashboard/dashboard.html" %}
-{% block title %}Manager Dashboard{% endblock title %}
+{% extends "dashboard/dashboard.html" %} 
+{% block title %}Manager Dashboard{% endblock title %} 
 {% block task %}
 
 <div>
-        {% if messages %}
-          {% for message in messages %}
-          
-          <div class="px-2 py-1 {% if message.tags == 'success' %} bg-green-400 {% endif %} ">{{message}}</div>
+  {% if messages %} {% for message in messages %}
 
-          {% endfor %}
-        {% endif %}
+  <div
+    class="px-2 py-1 {% if message.tags == 'success' %} bg-green-400 {% endif %}"
+  >
+    {{message}}
+  </div>
+
+  {% endfor %} {% endif %}
+</div>
+
+<!-- Task Table  -->
+<div class="bg-white rounded-xl shadow-sm">
+  <div
+    class="grid grid-cols-4 p-4 border-b border-gray-100 text-sm text-gray-500"
+  >
+    <div>TASK TITLE</div>
+    <div>PRIORITY</div>
+    <div>TEAM</div>
+    <div>CREATED AT</div>
+   <!-- <div>Update TASK</div>-->
+  </div>
+  <!-- Task Items  -->
+  <div class="divide-y divide-gray-100">
+    <!-- Task 1 -->
+    {% for task in tasks %}
+
+    <div class="grid grid-cols-4 gap-4 p-4 items-center">
+      <div class="flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-green-500"></div>
+        <span class="text-black"><a href="{% url 'task-details' task.id %}">{{task.title}}</a></span>
       </div>
 
-      
-        <!-- Task Table  -->
-        <div class="bg-white rounded-xl shadow-sm">
-            <div
-              class="grid  grid-cols-4 p-4 border-b border-gray-100 text-sm text-gray-500"
-            >
-              <div>TASK TITLE</div>
-              <div>PRIORITY</div>
-              <div>TEAM</div>
-              <div>CREATED AT</div>
-              <!--<div>Update TASK</div>-->
-            </div>
-            <!-- Task Items  -->
-            <div class="divide-y divide-gray-100">
-              <!-- Task 1 -->
-              {% for task in tasks %}
-              
-                <div class="grid grid-cols-4 gap-4 p-4 items-center">
-                <div class="flex items-center gap-2">
-                  <div class="w-2 h-2 rounded-full bg-green-500"></div>
-                  <span class=" text-black">{{task.title}}</span>
-                  <a class="bg-green-300 p-5" href="{% url 'update-task' task.id %} ">Edit</a>
+
+      <div>
+        <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-sm"
+          >{{task.detail.get_priority_display | upper}}</span
+        >
+      </div>
+      <div class="flex -space-x-2">
+        {% for user in task.assigned_to.all %}
+
+        <div
+          class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white"
+        >
+          {{user.first_name | slice:':1'}}
+        </div>
+        
+        {% endfor %}
+      </div>
+     <div class="text-gray-500">{{task.created_at | timesince}} ago</div>
+      <!--       <div class="flex items-center gap-2">
+                                 
+                  <a class="bg-green-300 p-2 rounded-md" href="{% url 'update-task' task.id %} ">Edit</a>
+                  
                   <form action="{% url 'delete-task' task.id %}" method="POST">
                     {% csrf_token %}  
-                    <button type="submit" class="bg-green-300 p-5" >Delete</button>
-
-
+                    <button type="submit" class="rounded-md bg-red-300 p-2" >Delete</button>
                   </form>
-                </div>
                 
-                 
-                  
-                
-                
-                
-                
-                
-                <div>
-                  <span
-                    class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-sm"
-                    >{{task.status}}</span
-                  >
-                </div>
-                <div class="flex -space-x-2">
-                  {% for emp in task.assigned_to.all %}
+      </div>-->
+    </div>
 
-                  <div
-                    class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white"
-                  >
-                   
-                   {{emp.name | slice:':1'}}
-                   
-                  </div>
-                  {% endfor %}
-
-                </div>
-                <div class="text-gray-500">{{task.created_at | timesince}} ago</div>
-              </div>
-              
-              {% endfor %}
-  
-
-            </div>
-          </div>
-          {% endblock task %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock task %}

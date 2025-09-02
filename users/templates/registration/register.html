@@ -1,15 +1,10 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Form</title>
-    <link rel="stylesheet" href="{% static 'css/output.css' %}">
-</head>
-<body class="flex items-center flex-col h-screen">
-    <h1>Welcome to authenction system .</h1>
-    <br>
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock title %}
+
+{% block content %}
+<div class="flex items-center flex-col h-screen mt-10">
+
 <!-- direct form empliment-->
 
     {% comment %} <div>
@@ -74,12 +69,12 @@
         {% endfor %}
 
 
-        <button type="Submit " class= "px-5 py-3 bg-sky-300 rounded-md text-white text-xl ">Register</button>
+        <button type="Submit " class= "mt-5 px-5 py-3 bg-sky-300 rounded-md text-white text-xl ">Register</button>
         <a href="{% url 'sign-in' %}"  
            <span class= "px-5 py-3 bg-yellow-300 rounded-md text-white text-xl ">Sign In</span> 
         </a>
     </form>
 </div>
-</body>
-</html>
+</div>
+{% endblock content %}
 
