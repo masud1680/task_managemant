@@ -24,7 +24,7 @@
                 <ul class="list-disc list-inside">
                   {% for permission in group.permissions.all %}
                   
-                  <li>{{permission.name}}</li>
+                  <li>{{permission.name}}|{{permission.codename}}</li>
                   {% empty%}
                   <span class="bg-red-400 px-5 py-2 text-white text-bold">No permission assigned.</span>
                   {% endfor %}

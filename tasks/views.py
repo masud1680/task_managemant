@@ -4,10 +4,18 @@ from tasks.forms import TaskForm, TaskModelForm, TaskDetailModelFrom
 from tasks.models import *
 from django.db.models import Q, Count, Min, Max, Avg
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 
+# create your function below.
+
+def is_manager(user):
+    return user.groups.filter(name="Manager").exists()
+
+def is_employee(user):
+    return user.groups.filter(name="Employee").exists()
 
 # Create your views here.
-
+@user_passes_test(is_manager, login_url='no-permission')
 def manager_dashboard(request):
     
     type = request.GET.get('type', 'all')
@@ -53,20 +61,13 @@ def manager_dashboard(request):
     }
     return render(request,"dashboard/manager_dashboard.html", context)
 
-def users_dashboard(request):
+@user_passes_test(is_employee, login_url='no-permission')
+def employee_dashboard(request):
     return render(request,"dashboard/users_dashboard.html")
 
-def test(request):
-    context = {
-        "name" : ["Akash","Abeg","Masud"],
-        "age" : [18],
-    }
-    return render(request,"test.html",context)
 
-# def create_task(request):
-#     # using for get post learning
-#     return render(request,"task_form.html")
-
+@login_required
+@permission_required("tasks.add_task", login_url='no-permission')
 def create_task(request):
     # employees = Employee.objects.all()
     task_form = TaskModelForm()
@@ -109,6 +110,8 @@ def create_task(request):
     context = {"task_form" : task_form, 'task_detail_form' : task_detail_form}
     return render(request,"task_form.html", context)
 
+@login_required
+@permission_required("tasks.change_task", login_url='no-permission')
 def update_task(request, id):
     task = Task.objects.get(id=id)
     task_form = TaskModelForm(instance= task)
@@ -135,6 +138,8 @@ def update_task(request, id):
     context = {"task_form" : task_form, 'task_detail_form' : task_detail_form}
     return render(request,"task_form.html", context)
 
+@login_required
+@permission_required("tasks.delete_task", login_url='no-permission')
 def delete_task(request, id):
     if request.method == 'POST':
         task = Task.objects.get(id=id)
@@ -144,7 +149,9 @@ def delete_task(request, id):
     else:
         messages.success(request, "Something went wrong!!")
         return redirect('manager-dashboard')
-
+    
+@login_required
+@permission_required("tasks.view_task", login_url='no-permission')
 def view_task(request):
     # tasks = Task.objects.all()
     # tasks = Task.objects.filter(status = 'PENDING')
