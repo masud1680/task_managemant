@@ -32,9 +32,12 @@
     
     {% for message in messages %}
         <span class="bg bg-sky-300 text-white text 2xl w-100 h-20">{{message}}</span>
+        <br>
     {% endfor %}
     
     {% endif %}
+
+    <br>
     <!--Show non field error-->
 
     {% if form.non_field_errors %}
@@ -46,7 +49,7 @@
     {% endif %}
 
     <!-- show form-->
-    <form action="" method='POST'>
+    <form action="{% url 'sign-up' %}" method='POST'>
 
         {% csrf_token %}
 

@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User 
-from users.forms import  CustomRegisterForm
+from users.forms import  CustomRegisterForm, CustomLoginForm
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.tokens import default_token_generator
 
 # Create your views here.
 
@@ -41,8 +42,16 @@ def sign_up(request):
         #         print('password are not save.')
         # else:
         #     print("form is invalid.")
-            form.save()
+        
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data.get('password1'))
+            # print(form.cleaned_data)
+            user.is_active = False
+            user.save()
+            
             messages.success(request,'Registration Successfull.')
+            messages.success(request,'\n\nA Confirmation mail sent. Please check your email.')
+            redirect('sign-in')
         else:
             messages.warning(request,'Registration Unsuccessfull.')
             
@@ -50,19 +59,35 @@ def sign_up(request):
 
 
 def sign_in(request):
+    form = CustomLoginForm()
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        form = CustomLoginForm(data = request.POST)
         
-        user = authenticate(request, username = username, password = password)
-        
-        if user is not None:
+        if form.is_valid():
+            user = form.get_user()
             login(request, user)
             return redirect('home')
-    return render(request, 'registration/login.html')
+        
+    return render(request, 'registration/login.html', {"form" : form})
 
 def sign_out(request):
     
     if request.method == 'POST':
         logout(request)
         return redirect('home')
+    
+    
+def active_user(request, user_id, token):
+    try:
+        user = User.objects.get(id = user_id)
+        # print(user.id)
+        if default_token_generator.check_token(user, token):
+            user.is_active = True
+            # print(user.username)
+            user.save()
+            
+            return  redirect('sign-in')
+        else: return HttpResponse('Invalid user or token!!')
+    
+    except User.DoesNotExist:
+        return HttpResponse('User not found!!')
