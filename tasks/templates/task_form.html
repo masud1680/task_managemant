@@ -34,14 +34,14 @@
         {% endif %}
       </div>
 
-      <form method="POST">
+      <form method="POST" enctype="multipart/form-data">
         
         
         {% csrf_token %} 
         {{task_form.as_p}}
         {{task_detail_form.as_p}}
 
-        <button class="bg-sky-300 px-5 py-2 text-xl text-white rounded-md" type="submit">Sumbit</button>
+        <button class="bg-sky-300 px-5 py-2 text-xl my-5 text-white rounded-md" type="submit">Sumbit</button>
       </form>
     </div>
 {% endblock content %}

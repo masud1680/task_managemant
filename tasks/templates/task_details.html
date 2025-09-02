@@ -26,15 +26,19 @@
           </svg>
           Task Detail
         </button>
+
         <div class="flex items-center gap-2">
+            <form method='POST'>
+                {% csrf_token %}
           <select
             name="task_status"
             id="task_status"
             class="px-4 py-2 border rounded-md"
           >
-            <option value="pending">Pending</option>
-            <option value="in_progress">In Progress</option>
-            <option value="completed">Completed</option>
+            {% for value, label in status_choices %}
+                <option value="{{value}}">{{label}}</option>
+            {% endfor %}
+
           </select>
           <button
             class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
@@ -42,6 +46,7 @@
           >
             Change Status
           </button>
+          </form>
         </div>
       </div>
 
@@ -116,7 +121,7 @@
             <h2 class="text-xl font-bold mb-4">ASSETS</h2>
             <div class="space-y-4">
               <img
-                src="/placeholder.svg?height=200&width=300"
+                src="{{task.detail.asset.url}}"
                 alt="Task Manager App Screenshot 1"
                 class="w-full rounded-lg"
               />

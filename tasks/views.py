@@ -5,6 +5,7 @@ from tasks.models import *
 from django.db.models import Q, Count, Min, Max, Avg
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
+from users.views import is_admin
 
 # create your function below.
 
@@ -19,21 +20,6 @@ def is_employee(user):
 def manager_dashboard(request):
     
     type = request.GET.get('type', 'all')
-    
-    
-    #getting task count
-    # total_task = tasks.count()
-    # completed_task = Task.objects.filter(status = "COMPLETED").count()
-    # in_progress_task = Task.objects.filter(status = "IN_PROGRESS").count()
-    # pending_task = Task.objects.filter(status = "PENDING").count()
-    
-    # context = {
-    #     'tasks' : tasks,
-    #     'total_task' : total_task,
-    #     'completed_task' : completed_task,
-    #     'in_progress_task' : in_progress_task,
-    #     'pending_task' : pending_task,
-    # }
     
     
     counts = Task.objects.aggregate(
@@ -69,14 +55,14 @@ def employee_dashboard(request):
 @login_required
 @permission_required("tasks.add_task", login_url='no-permission')
 def create_task(request):
-    # employees = Employee.objects.all()
+    
     task_form = TaskModelForm()
     task_detail_form = TaskDetailModelFrom()
     
 
     if request.method == "POST":
         task_form = TaskModelForm(request.POST)
-        task_detail_form = TaskDetailModelFrom(request.POST)
+        task_detail_form = TaskDetailModelFrom(request.POST, request.FILES)
         if task_form.is_valid() and task_detail_form.is_valid():
 
             '''For Django Model From Data'''
@@ -89,23 +75,7 @@ def create_task(request):
             return redirect('create-task')
         
         
-            ''' For Django From Data'''
-            # data = form.cleaned_data
-            # title = data.get("title")
-            # description = data.get("description")
-            # due_date = data.get("due_date")
-            # assigned_to = data.get("assigned_to") # list [1,3]
-
-            # Task = task.objects.create(
-            #     title = title, description = description , due_date = due_date
-            # )
-
-            # #assigned employee to task
-            # for emp_id in assigned_to:
-            #     employee = Employee.objects.get(id = emp_id)
-            #     Task.assigned_to.add(employee)
-            
-            # return HttpResponse("Task Added Successfully")
+          
 
     context = {"task_form" : task_form, 'task_detail_form' : task_detail_form}
     return render(request,"task_form.html", context)
@@ -153,8 +123,6 @@ def delete_task(request, id):
 @login_required
 @permission_required("tasks.view_task", login_url='no-permission')
 def view_task(request):
-    # tasks = Task.objects.all()
-    # tasks = Task.objects.filter(status = 'PENDING')
     tasks = TaskDetail.objects.exclude(priority = "L") #problume
      
     return render(request, 'dashboard/view_task.html', {'tasks' : tasks})
@@ -163,4 +131,24 @@ def view_task(request):
 @permission_required("tasks.view_task", login_url='no-permission')
 def task_details(request, task_id):
     task = Task.objects.get(id = task_id)
-    return render(request, 'task_details.html', {"task" : task})
+    status_choices = Task.STATUS_CHOICES
+    
+    if request.method == 'POST':
+        selece_status = request.POST.get('task_status')
+        task.status = selece_status
+        task.save()
+        return redirect('task-details', task.id)
+    
+    return render(request, 'task_details.html', {"task" : task, "status_choices" : status_choices})
+
+
+@login_required
+def deshboard_redirect(request):
+    if is_manager(request.user):
+        return redirect('manager-dashboard')
+    elif is_employee(request.user):
+        return redirect('user-dashboard')
+    elif is_admin(request.user):
+        return redirect('admin-dashboard')
+    
+    return redirect('no-permission')

@@ -20,6 +20,10 @@ import debug_toolbar
 from debug_toolbar.toolbar import debug_toolbar_urls
 from core.views import home, no_permission
 
+# for media files
+from django.conf.urls.static import static
+from django.conf import settings
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,3 +33,8 @@ urlpatterns = [
     path("users/",include("users.urls")),
     path('__debug__/', include('debug_toolbar.urls')),
 ] + debug_toolbar_urls()
+
+
+# for media files
+
+urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
