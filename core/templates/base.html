@@ -58,7 +58,7 @@
   </head>
   <body class="font-sans bg-gray-100">
     
-    {% if request.user.is_authenticated %}
+    {% if  user.is_authenticated  %}
     {% include "login_nav.html" %}
     {% else %}
     {% include "non_login_nav.html" %}

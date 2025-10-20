@@ -24,6 +24,9 @@ class CustomRegisterForm(StyledFormMixin, forms.ModelForm):
         fields = ['username', 'first_name', 'last_name', 'password1', 'confirm_password', 'email']
     
         
+        
+        
+        
     def clean_password1(self):
         
         password1 = self.cleaned_data.get('password1')
