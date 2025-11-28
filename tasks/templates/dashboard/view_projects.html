@@ -1,0 +1,32 @@
+ {% extends "dashboard/dashboard.html" %}
+
+{% block title %} view | task{% endblock title %} 
+
+
+
+
+{% block content %}
+    <h1>All Projects </h1>
+    <br>
+    <br>
+
+
+
+<div>
+
+    {% for project in projects %}
+   <ol>
+    
+        <li>
+            <P>{{project.name}}</P>
+            <P>{{project.num_task}}</P>
+        </li>
+       
+  </ol>
+    {% endfor %}
+
+
+</div>
+
+{% endblock  %}
+

@@ -16,6 +16,16 @@ def is_admin(user):
 
 # Create your views here.
 
+from django.views import View
+class Gettings(View):
+    messages = "I love you."
+
+    def get(self, request):
+        return HttpResponse(self.messages)
+    
+class MyGettings(Gettings):
+    messages = "Break up to you."
+
 # def sign_up(request):
     
 #     if request.method == 'GET':
