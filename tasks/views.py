@@ -10,8 +10,8 @@ from django.views import View
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.views.generic.base import ContextMixin
-from django.views.generic import ListView, DetailView
-
+from django.views.generic import ListView, DetailView, DeleteView, TemplateView
+from django.urls import reverse_lazy
 
 # create your function below.
 
@@ -22,40 +22,87 @@ def is_employee(user):
     return user.groups.filter(name="Employee").exists()
 
 # Create your views here.
-@user_passes_test(is_manager, login_url='no-permission')
-def manager_dashboard(request):
+# @user_passes_test(is_manager, login_url='no-permission')
+# def manager_dashboard(request):
     
-    type = request.GET.get('type', 'all')
+#     type = request.GET.get('type', 'all')
     
     
-    counts = Task.objects.aggregate(
-        total = Count('id'), 
-        completed = Count('id', filter=Q(status = "COMPLETED")),
-        in_progress = Count('id', filter=Q(status = 'IN_PROGRESS')),
-        pending = Count('id', filter=Q(status = 'PENDING')),
+#     counts = Task.objects.aggregate(
+#         total = Count('id'), 
+#         completed = Count('id', filter=Q(status = "COMPLETED")),
+#         in_progress = Count('id', filter=Q(status = 'IN_PROGRESS')),
+#         pending = Count('id', filter=Q(status = 'PENDING')),
                 
-    )
+#     )
     
-    base_query = Task.objects.select_related('detail').prefetch_related('assigned_to').all()
+#     base_query = Task.objects.select_related('detail').prefetch_related('assigned_to').all()
     
-    if type == 'completed':
-        tasks = base_query.filter(status = 'COMPLETED')
-    elif type == 'in_progress':
-        tasks = base_query.filter(status = 'IN_PROGRESS')
-    elif type == 'pending':
-        tasks = base_query.filter(status = 'PENDING')
-    elif type == 'all':
-        tasks = base_query.all()
+#     if type == 'completed':
+#         tasks = base_query.filter(status = 'COMPLETED')
+#     elif type == 'in_progress':
+#         tasks = base_query.filter(status = 'IN_PROGRESS')
+#     elif type == 'pending':
+#         tasks = base_query.filter(status = 'PENDING')
+#     elif type == 'all':
+#         tasks = base_query.all()
     
-    context = {
-        'tasks' : tasks,
-        'counts' : counts,
-    }
-    return render(request,"dashboard/manager_dashboard.html", context)
+#     context = {
+#         'tasks' : tasks,
+#         'counts' : counts,
+#     }
+#     return render(request,"dashboard/manager_dashboard.html", context)
 
-@user_passes_test(is_employee, login_url='no-permission')
-def employee_dashboard(request):
-    return render(request,"dashboard/users_dashboard.html")
+
+class Manager_dashboard(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    login_url = 'no-permission'
+    template_name = 'dashboard/manager_dashboard.html'
+
+    def test_func(self):
+        return self.request.user.is_authenticated and is_manager(self.request.user)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        type = self.request.GET.get('type', 'all')
+    
+    
+        counts = Task.objects.aggregate(
+            total = Count('id'), 
+            completed = Count('id', filter=Q(status = "COMPLETED")),
+            in_progress = Count('id', filter=Q(status = 'IN_PROGRESS')),
+            pending = Count('id', filter=Q(status = 'PENDING')),
+                    
+        )
+        context["counts"] = counts
+
+        base_query = Task.objects.select_related('detail').prefetch_related('assigned_to').all()
+    
+        if type == 'completed':
+            tasks = base_query.filter(status = 'COMPLETED')
+        elif type == 'in_progress':
+            tasks = base_query.filter(status = 'IN_PROGRESS')
+        elif type == 'pending':
+            tasks = base_query.filter(status = 'PENDING')
+        elif type == 'all':
+            tasks = base_query.all()
+
+        context["tasks"] = tasks
+        return context
+    
+    
+
+# @user_passes_test(is_employee, login_url='no-permission')
+# def employee_dashboard(request):
+#     return render(request,"dashboard/users_dashboard.html")
+
+class EmployeeDashboard(LoginRequiredMixin,UserPassesTestMixin, TemplateView):
+    login_url = 'no-permission'
+    template_name = 'dashboard/users_dashboard.html'
+
+    def test_func(self):
+        return self.request.user.is_authenticated and is_employee(self.request.user)
+    
 
 
 # @login_required
@@ -154,18 +201,46 @@ def update_task(request, id):
     context = {"task_form" : task_form, 'task_detail_form' : task_detail_form}
     return render(request,"task_form.html", context)
 
-@login_required
-@permission_required("tasks.delete_task", login_url='no-permission')
-def delete_task(request, id):
-    if request.method == 'POST':
-        task = Task.objects.get(id=id)
-        task.delete()
-        messages.success(request, "Task Deleted Successfully.")
-        return redirect('manager-dashboard')
-    else:
-        messages.success(request, "Something went wrong!!")
-        return redirect('manager-dashboard')
+# @login_required
+# @permission_required("tasks.delete_task", login_url='no-permission')
+# def delete_task(request, id):
+#     if request.method == 'POST':
+#         task = Task.objects.get(id=id)
+#         task.delete()
+#         messages.success(request, "Task Deleted Successfully.")
+#         return redirect('manager-dashboard')
+#     else:
+#         messages.success(request, "Something went wrong!!")
+#         return redirect('manager-dashboard')
+
+
+
+class DeleteTaskView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    model = Task
+    login_url = 'no-permission'
+    permission_required = 'tasks.delete_task'
     
+    success_url = reverse_lazy('manager-dashboard')
+
+    def get_object(self, queryset=None):
+        id = self.kwargs.get('id')
+        return Task.objects.get(id=id)
+
+    def post(self, request, *args, **kwargs):
+        messages.success(request, 'Task Deleted Successfully.')
+        return super().post(request, *args, **kwargs)
+    
+
+
+
+
+
+
+
+
+
+
+
 # @login_required
 # @permission_required("projects.view_project", login_url='no-permission')
 # def view_project(request):
@@ -217,10 +292,6 @@ class TaskDetails(DetailView):
         context['status_choices'] = Task.STATUS_CHOICES
 
         return context
-    
-
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
     
 
     def post(self, request, *args, **kwargs):

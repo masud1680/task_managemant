@@ -1,14 +1,22 @@
 from django.urls import path
-from users.views import sign_in, sign_up, sign_out, active_user, admin_dashboard, assign_role, create_group,group_list, Gettings, MyGettings
+from users.views import Gettings, MyGettings, SignUp,SignIn, SignOut, AdminDashboard, AssignRoleView, GroupListView, CreateGroupView, ActiveUserView
 urlpatterns = [
-    path('sign-up/', sign_up , name="sign-up"),
-    path('sign-in/', sign_in, name="sign-in"), 
-    path('sign-out/', sign_out, name="sign-out"), 
-    path('activate/<int:user_id>/<str:token>/', active_user),
-    path('admin/dashboard/', admin_dashboard, name="admin-dashboard") ,
-    path('admin/<int:user_id>/assign-role/', assign_role, name="assign-role") ,
-    path('admin/create-group/', create_group, name="create-group") ,
-    path('admin/group-list/', group_list, name="group-list") ,
+    # path('sign-up/', sign_up , name="sign-up"),
+    path('sign-up/', SignUp.as_view() , name="sign-up"),
+    # path('sign-in/', sign_in, name="sign-in"), 
+    path('sign-in/', SignIn.as_view(), name="sign-in"), 
+    # path('sign-out/', sign_out, name="sign-out"), 
+    path('sign-out/', SignOut.as_view(), name="sign-out"), 
+    # path('activate/<int:user_id>/<str:token>/', active_user),
+    path('activate/<int:user_id>/<str:token>/', ActiveUserView.as_view()),
+    # path('admin/dashboard/', admin_dashboard, name="admin-dashboard") ,
+    path('admin/dashboard/', AdminDashboard.as_view(), name="admin-dashboard") ,
+    # path('admin/<int:user_id>/assign-role/', assign_role, name="assign-role") ,
+    path('admin/<int:user_id>/assign-role/', AssignRoleView.as_view(), name="assign-role") ,
+    # path('admin/create-group/', create_group, name="create-group") ,
+    path('admin/create-group/', CreateGroupView.as_view(), name="create-group") ,
+    # path('admin/group-list/', group_list, name="group-list") ,
+    path('admin/group-list/', GroupListView.as_view(), name="group-list") ,
     path('gettings/', Gettings.as_view(), name="gettings"),
     path('mygettings/', MyGettings.as_view(), name="gettings"),
     
